@@ -1,0 +1,39 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*_test
+
+# Output of `go build`
+# For example, if your main package is in a directory named 'myproject',
+# `go build` will create an executable named 'myproject' in the current directory.
+# You might want to ignore this, or specify a dedicated 'bin/' directory.
+# For example:
+# myproject
+# bin/
+
+# Dependency directories (Go modules)
+# These are usually handled by `go mod tidy` and `go mod vendor`
+# and are not typically committed to Git unless vendoring is explicitly used.
+vendor/
+
+# Go cache
+.go_cache/
+
+# IDE specific files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
