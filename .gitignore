@@ -19,7 +19,7 @@
 # These are usually handled by `go mod tidy` and `go mod vendor`
 # and are not typically committed to Git unless vendoring is explicitly used.
 vendor/
-
+tmp/
 # Go cache
 .go_cache/
 
