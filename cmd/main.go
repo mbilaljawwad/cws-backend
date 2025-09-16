@@ -24,9 +24,13 @@ func service() *chi.Mux {
 	return router
 }
 
-func main() {
-	// TODO: Define proper routes and handlers.
+/**
+* TODOs:
+*  - Implement migration system using golang-migrate
+*  - Define proper routes and handlers.
+ */
 
+func main() {
 	// load configurations
 	appCfg := config.Load()
 
