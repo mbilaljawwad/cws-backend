@@ -41,8 +41,9 @@ EXPOSE 9000
 RUN addgroup -g 1001 -S golang && \
     adduser -S golang -u 1001
 
-# Change ownership of the app directory
-RUN chown -R golang:golang /app
+# Change ownership of the app directory and Go cache
+RUN chown -R golang:golang /app && \
+    chown -R golang:golang /go
 
 # Switch to non-root user
 USER golang

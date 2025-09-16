@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"cws-backend/internal/config"
+	"cws-backend/internal/database"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -24,13 +27,30 @@ func service() *chi.Mux {
 func main() {
 	// TODO: Define proper routes and handlers.
 
-	// create server context
-	server := &http.Server{
-		Addr:    ":9000",
-		Handler: service(),
+	// load configurations
+	appCfg := config.Load()
+
+	// connect to database
+	dbCfg := &database.DBConfig{
+		Host:     appCfg.DBHost,
+		Port:     appCfg.DBPort,
+		User:     appCfg.DBUser,
+		Password: appCfg.DBPassword,
+		DBName:   appCfg.DBName,
 	}
 
 	serverCtx, serverCancelCtx := context.WithCancel(context.Background())
+
+	dbManager := database.NewDBManager(dbCfg).WithRetries(2)
+	if err := dbManager.Connect(context.Background()); err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	// create server context
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%d", appCfg.APPPort),
+		Handler: service(),
+	}
 
 	// signal for graceful shutdown
 	signalCh := make(chan os.Signal, 1)
