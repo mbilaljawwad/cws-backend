@@ -36,11 +36,12 @@ func main() {
 
 	// connect to database
 	dbCfg := &database.DBConfig{
-		Host:     appCfg.DBHost,
-		Port:     appCfg.DBPort,
-		User:     appCfg.DBUser,
-		Password: appCfg.DBPassword,
-		DBName:   appCfg.DBName,
+		Host:           appCfg.DBHost,
+		Port:           appCfg.DBPort,
+		User:           appCfg.DBUser,
+		Password:       appCfg.DBPassword,
+		DBName:         appCfg.DBName,
+		MigrationTable: appCfg.DBMigrationsTable,
 	}
 
 	serverCtx, serverCancelCtx := context.WithCancel(context.Background())
@@ -49,6 +50,24 @@ func main() {
 	if err := dbManager.Connect(context.Background()); err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
+	defer dbManager.Close()
+
+	if err := dbManager.InitMigrator(); err != nil {
+		log.Fatalf("failed to initialize database migrator: %v", err)
+	}
+
+	if err := dbManager.RunMigrationsUp(); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
+	dbVersion, dirty, err := dbManager.GetDatabaseVersion()
+	if err != nil {
+		log.Fatalf("failed to get database version: %v", err)
+	}
+	if dirty {
+		log.Println("database is dirty, please run migrations")
+	}
+	log.Printf("database version: %d", dbVersion)
 
 	// create server context
 	server := &http.Server{
