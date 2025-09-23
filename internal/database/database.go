@@ -20,7 +20,7 @@ type DBConfig struct {
 
 type DBManager struct {
 	cfg        *DBConfig
-	db         *sqlx.DB
+	DB         *sqlx.DB
 	maxRetries int
 }
 
@@ -42,19 +42,13 @@ func (dm *DBManager) Connect(ctx context.Context) error {
 			return ctx.Err()
 		default:
 			// initialize database connection
-			dm.db, err = sqlx.Open("postgres", connStr)
+			dm.DB, err = sqlx.ConnectContext(ctx, "postgres", connStr)
 			if err != nil {
 				log.Printf("failed to connect to database with retries %d : %v", retries, err)
 				time.Sleep(time.Duration(retries+1) * time.Second)
 				continue
 			}
 
-			// ping database to ensure that the connection is established
-			if err = dm.db.PingContext(ctx); err != nil {
-				log.Printf("failed to ping database with retries %d : %v", retries, err)
-				time.Sleep(time.Duration(retries+1) * time.Second)
-				continue
-			}
 			log.Println("Successfully connected to database")
 			return nil
 		}
@@ -65,4 +59,8 @@ func (dm *DBManager) Connect(ctx context.Context) error {
 func (dm *DBManager) WithRetries(retries int) *DBManager {
 	dm.maxRetries = retries
 	return dm
+}
+
+func (dm *DBManager) Close() error {
+	return dm.DB.Close()
 }

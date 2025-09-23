@@ -6,6 +6,7 @@ FROM golang:1.25-alpine AS base
 
 # Install git and other necessary tools
 RUN apk add --no-cache git curl
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 # Set working directory
 WORKDIR /app
