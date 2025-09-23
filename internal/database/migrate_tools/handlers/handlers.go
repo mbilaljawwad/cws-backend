@@ -21,7 +21,7 @@ import (
 //go:embed migrations/*
 var migrationFS embed.FS
 
-const migrationsDir = "./handlers/migrations"
+const migrationsDir = "internal/database/migrate_tools/handlers/migrations"
 
 type DBMigrator struct {
 	migrator *migrate.Migrate
