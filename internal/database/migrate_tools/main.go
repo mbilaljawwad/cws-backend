@@ -10,29 +10,10 @@ import (
 	"log"
 )
 
-/**
-* TODO:
-*  - Implement migration Up/Down commands
-*  - Store migration versions in a separate table for backup purposes
-*  - Add a command to apply migrations to a specific database
- */
-
-/**
-Actions:
-- create
-- up [N]
-- down [N]
-- force [V]
-- goto [V]
-- version
-*/
-
 func main() {
-
 	action := flag.String("action", "", "Action to perform")
 	name := flag.String("name", "", "Name of the migration")
-	// steps := flag.Int("steps", 0, "Number of steps to perform")
-	// version := flag.String("version", "", "Version to perform")
+	version := flag.Int("version", 0, "Version to perform")
 	flag.Parse()
 
 	cfg := config.Load()
@@ -51,6 +32,7 @@ func main() {
 	defer dbManager.Close()
 
 	dbMigrator := handlers.NewDBMigrator(dbManager.DB)
+	dbMigrator.DBCfg = dbCfg
 
 	err := dbMigrator.InitiateMigrator()
 	if err != nil {
@@ -66,11 +48,11 @@ func main() {
 	case "down":
 		dbMigrator.Down()
 	case "force":
-		fmt.Println("Forcing migration")
+		dbMigrator.Force(int(*version))
 	case "goto":
-		fmt.Println("Go to migration")
+		dbMigrator.Goto(int(*version))
 	case "version":
-		fmt.Println("Getting version")
+		dbMigrator.Version()
 	default:
 		fmt.Println("Invalid action")
 	}

@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"cws-backend/internal/database"
 	"embed"
 	"errors"
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"time"
@@ -24,6 +26,7 @@ const migrationsDir = "./handlers/migrations"
 type DBMigrator struct {
 	migrator *migrate.Migrate
 	db       *sqlx.DB
+	DBCfg    *database.DBConfig
 }
 
 func showError(err error) {
@@ -123,6 +126,9 @@ func (dbm *DBMigrator) Create(name string) {
 	fmt.Println("Down migration file: ", downfile)
 }
 
+/*
+* Run up migration
+ */
 func (dbm *DBMigrator) Up() {
 	log.Println("Up migration is initiated")
 
@@ -137,6 +143,9 @@ func (dbm *DBMigrator) Up() {
 	log.Println("Up migration is completed")
 }
 
+/*
+* Run down migration
+ */
 func (dbm *DBMigrator) Down() {
 	log.Println("Initiating down migration")
 
@@ -149,4 +158,56 @@ func (dbm *DBMigrator) Down() {
 		return
 	}
 	log.Println("Down migration is completed")
+}
+
+/*
+* Run force migration
+ */
+func (dbm *DBMigrator) Force(version int) {
+	log.Println("Initiating force migration")
+
+	if err := dbm.migrator.Force(version); err != nil {
+		log.Fatalf("failed to run force migration: %v", err)
+		return
+	}
+	log.Printf("Force migration for version %d is completed\n", version)
+}
+
+/*
+* Run goto migration
+ */
+func (dbm *DBMigrator) Goto(version int) {
+	log.Println("Initiating goto migration")
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", dbm.DBCfg.User, dbm.DBCfg.Password, dbm.DBCfg.Host, dbm.DBCfg.Port, dbm.DBCfg.DBName)
+
+	gotoCmd := exec.Command(
+		"migrate",
+		"-path", "internal/database/migrate_tools/handlers/migrations",
+		"-database", connStr,
+		"goto", fmt.Sprintf("%d", version))
+	gotoCmd.Stdout = os.Stdout
+	gotoCmd.Stderr = os.Stderr
+	if err := gotoCmd.Run(); err != nil {
+		log.Fatalf("failed to run goto migration: %v", err)
+		return
+	}
+	log.Printf("Goto migration for version %d is completed\n", version)
+}
+
+/*
+* Get current migration version
+ */
+func (dbm *DBMigrator) Version() {
+	log.Println("Getting current migration version")
+
+	version, dirty, err := dbm.migrator.Version()
+	if dirty {
+		log.Printf("Migration with version %d is dirty\n", version)
+	}
+	if err != nil {
+		log.Fatalf("failed to get current migration version: %v", err)
+		return
+	}
+	log.Printf("Current migration version is %d\n", version)
 }
