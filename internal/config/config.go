@@ -12,7 +12,7 @@ type Config struct {
 	DBUser     string
 	DBPassword string
 	DBName     string
-	APPPort    int
+	AppPort    int
 }
 
 func Load() *Config {
@@ -22,7 +22,7 @@ func Load() *Config {
 		DBUser:     getEnv("DB_USER", "postgres"),
 		DBPassword: getEnv("DB_PASSWORD", "postgres"),
 		DBName:     getEnv("DB_NAME", "cwsdb"),
-		APPPort:    getEnvAsInt("APP_PORT", 9000),
+		AppPort:    getEnvAsInt("APP_PORT", 9000),
 	}
 }
 

@@ -33,7 +33,7 @@ func NewDBManager(cfg *DBConfig) *DBManager {
 
 func (dm *DBManager) Connect(ctx context.Context) error {
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dm.cfg.Host, dm.cfg.Port, dm.cfg.User, dm.cfg.Password, dm.cfg.DBName)
-	fmt.Println(connStr)
+
 	var err error
 	// retry to connect to database
 	for retries := 0; retries < dm.maxRetries; retries++ {
