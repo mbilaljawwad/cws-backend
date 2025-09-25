@@ -20,6 +20,7 @@
 # and are not typically committed to Git unless vendoring is explicitly used.
 vendor/
 tmp/
+postgres_data/
 # Go cache
 .go_cache/
 
