@@ -3,7 +3,6 @@ package routes
 import (
 	"cws-backend/internal/database"
 	"cws-backend/internal/handlers"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -22,7 +21,6 @@ func setupUserRoutes(dbm *database.DBManager) *chi.Mux {
 }
 
 func setupRoutes(dbm *database.DBManager) *chi.Mux {
-	log.Println("setting up routes")
 	router := chi.NewRouter()
 
 	// healthcheck
@@ -32,7 +30,6 @@ func setupRoutes(dbm *database.DBManager) *chi.Mux {
 	})
 
 	// setup user routes
-	log.Println("setting up user routes")
 	router.Mount("/users", setupUserRoutes(dbm))
 	return router
 }

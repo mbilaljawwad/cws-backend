@@ -45,12 +45,9 @@ func main() {
 
 	log.Println("Initializing server")
 	srv := server.NewServer(serverCtx, appCfg, dbManager)
-	log.Println("Server initialized")
 
 	// Run server with error group
-	log.Println("Starting server with error group")
 	group.Go(func() error {
-		log.Println("Starting server in error group")
 		srv.Start()
 		return nil
 	})
@@ -61,4 +58,8 @@ func main() {
 		log.Println("received signal to shutdown")
 		return nil
 	})
+
+	if err := group.Wait(); err != nil {
+		log.Fatalf("error group failed: %v", err)
+	}
 }
