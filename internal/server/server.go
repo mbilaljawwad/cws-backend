@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"cws-backend/internal/config"
-	"cws-backend/internal/database"
 	"cws-backend/internal/routes"
+	"cws-backend/pkg/database"
 	"fmt"
 	"log"
 	"net/http"

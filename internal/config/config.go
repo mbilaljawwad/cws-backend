@@ -7,22 +7,24 @@ import (
 
 // Refer this config as App Configuration
 type Config struct {
-	DBHost     string
-	DBPort     int
-	DBUser     string
-	DBPassword string
-	DBName     string
-	AppPort    int
+	DBHost        string
+	DBPort        int
+	DBUser        string
+	DBPassword    string
+	DBName        string
+	AppPort       int
+	MigrationsDir string
 }
 
 func Load() *Config {
 	return &Config{
-		DBHost:     getEnv("DB_HOST", "localhost"),
-		DBPort:     getEnvAsInt("DB_PORT", 5432),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "cwsdb"),
-		AppPort:    getEnvAsInt("APP_PORT", 9000),
+		DBHost:        getEnv("DB_HOST", "localhost"),
+		DBPort:        getEnvAsInt("DB_PORT", 5432),
+		DBUser:        getEnv("DB_USER", "postgres"),
+		DBPassword:    getEnv("DB_PASSWORD", "postgres"),
+		DBName:        getEnv("DB_NAME", "cwsdb"),
+		AppPort:       getEnvAsInt("APP_PORT", 9000),
+		MigrationsDir: getEnv("MIGRATIONS_DIR", "pkg/migrate_tools/handlers/migrations"),
 	}
 }
 

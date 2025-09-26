@@ -1,7 +1,7 @@
 BEGIN;
 
-    alter table roles add constraint cws_roles_name_key unique (name);
-    alter table permissions add constraint cws_permissions_name_key unique (name);
+    alter table roles if not exists add constraint cws_roles_name_key unique (name);
+    alter table permissions if not exists add constraint cws_permissions_name_key unique (name);
 
 		-- Add Up migration here
 		create table if not exists roles_permissions (

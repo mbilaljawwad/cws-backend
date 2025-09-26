@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"cws-backend/internal/database"
+	"cws-backend/pkg/database"
 	"embed"
 	"errors"
 	"fmt"
@@ -21,12 +21,11 @@ import (
 //go:embed migrations/*
 var migrationFS embed.FS
 
-const migrationsDir = "internal/database/migrate_tools/handlers/migrations"
-
 type DBMigrator struct {
-	migrator *migrate.Migrate
-	db       *sqlx.DB
-	DBCfg    *database.DBConfig
+	migrator      *migrate.Migrate
+	db            *sqlx.DB
+	DBCfg         *database.DBConfig
+	MigrationsDir string
 }
 
 func showError(err error) {
@@ -86,11 +85,11 @@ func (dbm *DBMigrator) Create(name string) {
 	filename := regex.ReplaceAllString(name, "_")
 
 	// create up and down file paths.
-	upfile := filepath.Join(migrationsDir, fmt.Sprintf("%s_%s.up.sql", version, filename))
-	downfile := filepath.Join(migrationsDir, fmt.Sprintf("%s_%s.down.sql", version, filename))
+	upfile := filepath.Join(dbm.MigrationsDir, fmt.Sprintf("%s_%s.up.sql", version, filename))
+	downfile := filepath.Join(dbm.MigrationsDir, fmt.Sprintf("%s_%s.down.sql", version, filename))
 
 	// create directory if it doesn't exist.
-	err := os.MkdirAll(migrationsDir, 0755)
+	err := os.MkdirAll(dbm.MigrationsDir, 0755)
 	if err != nil {
 		showError(err)
 		return
@@ -179,11 +178,19 @@ func (dbm *DBMigrator) Force(version int) {
 func (dbm *DBMigrator) Goto(version int) {
 	log.Println("Initiating goto migration")
 
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", dbm.DBCfg.User, dbm.DBCfg.Password, dbm.DBCfg.Host, dbm.DBCfg.Port, dbm.DBCfg.DBName)
+	connStr := fmt.Sprintf(
+		"postgres://%s:%s@%s:%d/%s?sslmode=disable&x-migrations-table=%s",
+		dbm.DBCfg.User,
+		dbm.DBCfg.Password,
+		dbm.DBCfg.Host,
+		dbm.DBCfg.Port,
+		dbm.DBCfg.DBName,
+		dbm.MigrationsDir,
+	)
 
 	gotoCmd := exec.Command(
 		"migrate",
-		"-path", "internal/database/migrate_tools/handlers/migrations",
+		"-path", dbm.MigrationsDir,
 		"-database", connStr,
 		"goto", fmt.Sprintf("%d", version))
 	gotoCmd.Stdout = os.Stdout
