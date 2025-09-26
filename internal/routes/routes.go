@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"cws-backend/internal/database"
 	"cws-backend/internal/handlers"
+	"cws-backend/pkg/database"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"

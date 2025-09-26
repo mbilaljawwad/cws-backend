@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"cws-backend/internal/database"
+	"cws-backend/pkg/database"
 	"net/http"
 )
 

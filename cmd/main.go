@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"cws-backend/internal/config"
-	"cws-backend/internal/database"
 	"cws-backend/internal/server"
+	"cws-backend/pkg/database"
 	"log"
 	"os"
 	"os/signal"

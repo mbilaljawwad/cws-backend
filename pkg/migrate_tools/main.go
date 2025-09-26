@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"cws-backend/internal/config"
-	"cws-backend/internal/database"
-	"cws-backend/internal/database/migrate_tools/handlers"
+	"cws-backend/pkg/database"
+	"cws-backend/pkg/migrate_tools/handlers"
 	"flag"
 	"fmt"
 	"log"
@@ -33,6 +33,7 @@ func main() {
 
 	dbMigrator := handlers.NewDBMigrator(dbManager.DB)
 	dbMigrator.DBCfg = dbCfg
+	dbMigrator.MigrationsDir = cfg.MigrationsDir
 
 	err := dbMigrator.InitiateMigrator()
 	if err != nil {

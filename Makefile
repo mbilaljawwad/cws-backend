@@ -1,6 +1,6 @@
 # Makefile for cws-backend
 
-migrate_tools = internal/database/migrate_tools/main.go
+migrate_tools = pkg/migrate_tools/main.go
 
 # create migration
 migrate-create:
