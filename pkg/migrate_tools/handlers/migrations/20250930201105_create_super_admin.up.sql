@@ -11,7 +11,7 @@ BEGIN;
 			updated_at TIMESTAMPTZ DEFAULT NOW()
 		);
 
-	INSERT INTO super_admin (email, first_name, last_name, password, last_login_at) VALUES ('superadmin@example.com', 'Super', 'Admin', 'password', NOW());
+	INSERT INTO IF NOT EXISTS super_admin (email, first_name, last_name, password, last_login_at) VALUES ('superadmin@example.com', 'Super', 'Admin', 'password', NOW());
 
 	COMMIT;
 	
