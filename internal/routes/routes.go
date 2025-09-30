@@ -14,11 +14,11 @@ type Routes struct {
 }
 
 // setting up user routes
-func setupUserRoutes(dbm *database.DBManager) *chi.Mux {
-	router := chi.NewRouter()
+func setupUserRoutes(apiRouter chi.Router, dbm *database.DBManager) {
 	userHandler := handlers.NewUserHandler(dbm)
-	router.Get("/", userHandler.GetUsers)
-	return router
+	apiRouter.Group(func(userRouter chi.Router) {
+		userRouter.Get("/users", userHandler.GetUsers)
+	})
 }
 
 func setupRoutes(dbm *database.DBManager) *chi.Mux {
@@ -29,18 +29,15 @@ func setupRoutes(dbm *database.DBManager) *chi.Mux {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-
 	// Swagger documentation
 	router.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"), // The url pointing to API definition
 	))
-
 	// API routes
-	router.Route("/api/v1", func(r chi.Router) {
-		// setup user routes
-		r.Mount("/users", setupUserRoutes(dbm))
-	})
+	router.Route("/api/v1", func(apiRouter chi.Router) {
+		setupUserRoutes(apiRouter, dbm)
 
+	})
 	return router
 }
 

@@ -185,7 +185,7 @@ func (dbm *DBMigrator) Goto(version int) {
 		dbm.DBCfg.Host,
 		dbm.DBCfg.Port,
 		dbm.DBCfg.DBName,
-		dbm.MigrationsDir,
+		"migrations",
 	)
 
 	gotoCmd := exec.Command(

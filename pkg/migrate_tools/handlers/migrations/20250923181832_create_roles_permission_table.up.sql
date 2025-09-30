@@ -16,7 +16,7 @@ BEGIN;
   create index if not exists idx_roles_permissions_permission_name on roles_permissions(permission_name);
 
 		-- Seed role→permission links (safe re-run)
-insert into roles_permissions (role_name, permission_name) values
+insert into if not exists roles_permissions (role_name, permission_name) values
   -- super_admin (all)
   ('super_admin', 'tenant:all'),
   ('super_admin', 'user:all'),
