@@ -1,6 +1,8 @@
 # Makefile for cws-backend
-
 migrate_tools = pkg/migrate_tools/main.go
+swag_tools = github.com/swaggo/swag/cmd/swag@latest
+
+# .PHONY: help swagger-gen swagger-gen-docker swagger-watch build dev clean
 
 # create migration
 migrate-create:
@@ -25,3 +27,6 @@ migrate-goto:
 # run migrations version
 migrate-version:
 	go run $(migrate_tools) -action version
+
+gen-doc:
+	go run $(swag_tools) init -g ./cmd/main.go --parseDependency --parseInternal -o ./docs/swagger
