@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"cws-backend/internal/handlers"
 	"cws-backend/pkg/database"
 	"net/http"
 
@@ -11,14 +10,6 @@ import (
 
 type Routes struct {
 	AppRouter *chi.Mux
-}
-
-// setting up user routes
-func setupUserRoutes(apiRouter chi.Router, dbm *database.DBManager) {
-	userHandler := handlers.NewUserHandler(dbm)
-	apiRouter.Group(func(userRouter chi.Router) {
-		userRouter.Get("/users", userHandler.GetUsers)
-	})
 }
 
 func setupRoutes(dbm *database.DBManager) *chi.Mux {
@@ -35,6 +26,7 @@ func setupRoutes(dbm *database.DBManager) *chi.Mux {
 	))
 	// API routes
 	router.Route("/api/v1", func(apiRouter chi.Router) {
+		setupSuperAdminRoutes(apiRouter, dbm)
 		setupUserRoutes(apiRouter, dbm)
 
 	})
