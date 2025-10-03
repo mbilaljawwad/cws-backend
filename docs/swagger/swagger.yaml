@@ -12,6 +12,24 @@ definitions:
         example: John Doe
         type: string
     type: object
+  internal_handlers_super_admin.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  internal_handlers_super_admin.SuperAdminUser:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -29,6 +47,28 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /super-admin/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: super admin login
+      parameters:
+      - description: Super Admin User Credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handlers_super_admin.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handlers_super_admin.SuperAdminUser'
+      summary: Super Admin Login
+      tags:
+      - super-admin
   /users:
     get:
       consumes:

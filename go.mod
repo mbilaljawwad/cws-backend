@@ -12,8 +12,12 @@ require (
 	golang.org/x/sync v0.17.0
 )
 
+require github.com/ajg/form v1.5.1 // indirect
+
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/go-chi/chi v1.5.5
+	github.com/go-chi/render v1.0.3
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/spec v0.20.6 // indirect
